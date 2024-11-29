@@ -86,7 +86,11 @@ export const unlikePost = async (req, res) => {
 
     const post = await PostMessage.findById(id);
 
-    if (!post || post.likeCount <= 0) {
+    if (!post) {
+        return res.status(404).send("Post not found.");
+    }
+
+    if (post.likeCount <= 0) {
         return res.status(400).send("Cannot unlike a post with zero likes.");
     }
 
