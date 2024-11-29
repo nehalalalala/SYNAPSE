@@ -76,5 +76,27 @@ export const likePost = async (req, res) => {
     res.json(updatedPost);
 }
 
+//unlike post
+export const unlikePost = async (req, res) => {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).send(`No post with id: ${id}`);
+    }
+
+    const post = await PostMessage.findById(id);
+
+    if (!post || post.likeCount <= 0) {
+        return res.status(400).send("Cannot unlike a post with zero likes.");
+    }
+
+    const updatedPost = await PostMessage.findByIdAndUpdate(
+        id,
+        { likeCount: post.likeCount - 1 },
+        { new: true }
+    );
+
+    res.json(updatedPost);
+};
 
 export default router;
